@@ -1,0 +1,30 @@
+# Laravel
+/vendor
+/node_modules
+/public/hot
+/public/storage
+/storage/*.key
+/.env
+/.env.*
+!/.env.example
+/.phpunit.cache
+Homestead.json
+Homestead.yaml
+auth.json
+npm-debug.log
+yarn-error.log
+/public/build
+/bootstrap/cache/*.php
+
+# IDE
+/.idea
+/.vscode
+*.sublime-project
+*.sublime-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+/storage/logs/*.log
