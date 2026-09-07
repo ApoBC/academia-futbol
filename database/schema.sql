@@ -358,6 +358,6 @@ INSERT INTO planes (nombre, tipo, duracion_dias, sesiones_max, precio, moneda, d
 -- En producción, cambiar inmediatamente después del primer login
 INSERT INTO usuarios (uuid, nombre, email, password, rol, activo) VALUES
 (UUID(), 'Administrador Principal', 'admin@academia.com', 
- '$2y$12$LJ3m4ys3Gp0Y5v8Gu.X5/.S8rE6YdF0hV7nC8yXzPm9R1L0Aq6WeW', 
+ '$2y$12$IY8tz4ShQK7vHc5jrbPBh.2SNRPKDPk4qO7fb8eg5dWG4iGyG1BzK',
  'admin', 1);
 
