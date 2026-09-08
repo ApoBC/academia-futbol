@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Asistencia;
 use App\Services\ReporteService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -17,7 +18,13 @@ class ReporteController extends Controller
 
     public function dashboard(): View
     {
-        return view('reportes.dashboard', ['kpis' => $this->reporteService->kpis()]);
+        return view('reportes.dashboard', [
+            'kpis' => $this->reporteService->kpis(),
+            'ingresosPorMes' => $this->reporteService->ingresosPorMes(),
+            'asistenciasPorCategoria' => $this->reporteService->asistenciasPorCategoria(),
+            'pagosRecientes' => $this->reporteService->pagosRecientes(),
+            'asistenciasHoy' => Asistencia::whereDate('fecha', now())->count(),
+        ]);
     }
 
     public function deudores(Request $request): View

@@ -85,4 +85,52 @@ class ReporteService
                 ->sum('monto'),
         ];
     }
+
+    /**
+     * Ingresos confirmados mes a mes, para graficar la tendencia reciente.
+     *
+     * @return Collection<int, array{mes: string, total: float}>
+     */
+    public function ingresosPorMes(int $meses = 6): Collection
+    {
+        return collect(range($meses - 1, 0))->map(function (int $i) {
+            $mes = now()->subMonths($i);
+
+            return [
+                'mes' => $mes->translatedFormat('M Y'),
+                'total' => (float) Pago::where('estado', EstadoPago::Confirmado)
+                    ->whereBetween('fecha_pago', [$mes->copy()->startOfMonth(), $mes->copy()->endOfMonth()])
+                    ->sum('monto'),
+            ];
+        });
+    }
+
+    /**
+     * Asistencias del mes actual agrupadas por categoría del alumno.
+     *
+     * @return Collection<int, object{categoria: string, total: int}>
+     */
+    public function asistenciasPorCategoria(): Collection
+    {
+        return Asistencia::join('alumnos', 'alumnos.id', '=', 'asistencias.alumno_id')
+            ->whereBetween('asistencias.fecha', [now()->startOfMonth(), now()->endOfMonth()])
+            ->selectRaw('alumnos.categoria, COUNT(*) as total')
+            ->groupBy('alumnos.categoria')
+            ->get();
+    }
+
+    /**
+     * Los últimos pagos confirmados, para el listado de actividad reciente.
+     *
+     * @return Collection<int, Pago>
+     */
+    public function pagosRecientes(int $limite = 5): Collection
+    {
+        return Pago::with('alumno')
+            ->where('estado', EstadoPago::Confirmado)
+            ->latest('fecha_pago')
+            ->latest('id')
+            ->limit($limite)
+            ->get();
+    }
 }
