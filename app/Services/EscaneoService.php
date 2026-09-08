@@ -24,7 +24,12 @@ class EscaneoService
      * Cualquier fallo (QR ilegible, alumno inexistente, alumno de baja) se
      * registra en intentos_escaneo_fallidos para detectar fraude o QRs viejos.
      */
-    public function escanear(string $contenidoQr, User $profesor, ?string $ipOrigen = null): EscaneoResultado
+    /**
+     * @param  array{fecha?: string, hora?: string, dispositivo_sync?: string, sincronizado?: bool}  $datosAsistencia
+     *                                                                                                                 Permite a la sincronización offline (Fase 5) reportar la fecha/hora real
+     *                                                                                                                 del escaneo (capturado sin conexión) en vez de usar el momento actual.
+     */
+    public function escanear(string $contenidoQr, User $profesor, ?string $ipOrigen = null, array $datosAsistencia = []): EscaneoResultado
     {
         try {
             $uuid = Crypt::decryptString($contenidoQr);
@@ -42,7 +47,7 @@ class EscaneoService
             return $this->registrarFallo($contenidoQr, $profesor, $ipOrigen, MotivoFalloEscaneo::AlumnoBaja);
         }
 
-        $yaRegistradoHoy = ! $this->registrarAsistencia($alumno, $profesor);
+        $yaRegistradoHoy = ! $this->registrarAsistencia($alumno, $profesor, $datosAsistencia);
 
         return EscaneoResultado::exito($alumno, $this->calcularSemaforo($alumno), $yaRegistradoHoy);
     }
@@ -76,18 +81,20 @@ class EscaneoService
     }
 
     /**
-     * @return bool true si se creó una asistencia nueva, false si ya existía una para hoy.
+     * @param  array{fecha?: string, hora?: string, dispositivo_sync?: string, sincronizado?: bool}  $datosAsistencia
+     * @return bool true si se creó una asistencia nueva, false si ya existía una para esa fecha.
      */
-    private function registrarAsistencia(Alumno $alumno, User $profesor): bool
+    private function registrarAsistencia(Alumno $alumno, User $profesor, array $datosAsistencia = []): bool
     {
         try {
             Asistencia::create([
                 'alumno_id' => $alumno->id,
                 'profesor_id' => $profesor->id,
-                'fecha' => now()->toDateString(),
-                'hora' => now()->toTimeString(),
+                'fecha' => $datosAsistencia['fecha'] ?? now()->toDateString(),
+                'hora' => $datosAsistencia['hora'] ?? now()->toTimeString(),
                 'origen' => OrigenAsistencia::EscaneoQr,
-                'sincronizado' => true,
+                'sincronizado' => $datosAsistencia['sincronizado'] ?? true,
+                'dispositivo_sync' => $datosAsistencia['dispositivo_sync'] ?? null,
             ]);
 
             return true;
