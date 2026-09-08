@@ -17,5 +17,23 @@
             <li><strong>⚠ Alerta de salud:</strong> {{ $alumno->alergias_enfermedades }}</li>
         @endif
     </ul>
+    <h2>Historial de pagos</h2>
+    <ul>
+        @forelse ($alumno->pagos()->latest('fecha_pago')->get() as $pago)
+            <li>
+                <a href="{{ route('pagos.show', $pago) }}">
+                    {{ $pago->fecha_pago->format('d/m/Y') }} — {{ $pago->plan->nombre }} —
+                    {{ $pago->moneda }} {{ number_format($pago->monto, 2) }} ({{ $pago->estado->value }})
+                </a>
+            </li>
+        @empty
+            <li>Sin pagos registrados.</li>
+        @endforelse
+    </ul>
+
+    @can('create', App\Models\Pago::class)
+        <p><a href="{{ route('pagos.create') }}">+ Registrar pago para este alumno</a></p>
+    @endcan
+
     <p><a href="{{ route('alumnos.index') }}">&larr; Volver</a></p>
 @endsection

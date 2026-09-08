@@ -8,6 +8,7 @@ use App\Services\CategoriaService;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
@@ -57,5 +58,10 @@ class Alumno extends Model
     public function padre(): BelongsTo
     {
         return $this->belongsTo(User::class, 'padre_id');
+    }
+
+    public function pagos(): HasMany
+    {
+        return $this->hasMany(Pago::class);
     }
 }

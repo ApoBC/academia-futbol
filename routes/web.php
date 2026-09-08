@@ -3,6 +3,7 @@
 use App\Http\Controllers\AlumnoController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PagoController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn () => redirect()->route('login'));
@@ -22,4 +23,7 @@ Route::middleware('auth')->group(function () {
 
     // Alumnos: admin gestiona todos, padre ve/edita solo los suyos (controlado por Policy)
     Route::resource('alumnos', AlumnoController::class);
+
+    // Pagos: admin registra, padre solo ve los de sus hijos (controlado por Policy)
+    Route::resource('pagos', PagoController::class)->only(['index', 'create', 'store', 'show']);
 });
