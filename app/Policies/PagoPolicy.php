@@ -9,12 +9,12 @@ class PagoPolicy
 {
     public function viewAny(User $user): bool
     {
-        return $user->hasAnyRole(['admin', 'padre']);
+        return $user->hasAnyRole(['superadmin', 'admin', 'padre']);
     }
 
     public function view(User $user, Pago $pago): bool
     {
-        if ($user->hasRole('admin')) {
+        if ($user->esAdmin()) {
             return true;
         }
 
@@ -23,11 +23,11 @@ class PagoPolicy
 
     public function create(User $user): bool
     {
-        return $user->hasRole('admin');
+        return $user->esAdmin();
     }
 
     public function update(User $user, Pago $pago): bool
     {
-        return $user->hasRole('admin');
+        return $user->esAdmin();
     }
 }

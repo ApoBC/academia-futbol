@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('telefono', 20)->nullable();
             $table->string('documento_identidad', 20)->nullable();
-            $table->enum('rol', ['admin', 'profesor', 'padre'])->default('padre');
+            $table->enum('rol', ['superadmin', 'admin', 'profesor', 'padre'])->default('padre');
             $table->boolean('activo')->default(true);
             $table->rememberToken();
             $table->timestamps();

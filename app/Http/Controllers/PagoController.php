@@ -12,15 +12,13 @@ use Illuminate\View\View;
 
 class PagoController extends Controller
 {
-    public function __construct(private readonly PagoService $pagoService)
-    {
-    }
+    public function __construct(private readonly PagoService $pagoService) {}
 
     public function index(): View
     {
         $this->authorize('viewAny', Pago::class);
 
-        $pagos = auth()->user()->hasRole('admin')
+        $pagos = auth()->user()->esAdmin()
             ? Pago::with(['alumno', 'plan', 'admin'])->latest('fecha_pago')->paginate(20)
             : Pago::with(['alumno', 'plan'])
                 ->whereHas('alumno', fn ($q) => $q->where('padre_id', auth()->id()))

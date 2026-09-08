@@ -16,7 +16,7 @@ class AlumnoController extends Controller
     {
         $this->authorize('viewAny', Alumno::class);
 
-        $alumnos = auth()->user()->hasRole('admin')
+        $alumnos = auth()->user()->esAdmin()
             ? Alumno::with('padre')->latest()->paginate(20)
             : Alumno::with('padre')->where('padre_id', auth()->id())->latest()->paginate(20);
 

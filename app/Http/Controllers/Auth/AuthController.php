@@ -50,8 +50,6 @@ class AuthController extends Controller
             'rol' => 'padre',
         ]);
 
-        $user->assignRole('padre');
-
         Auth::login($user);
 
         return redirect()->route('dashboard');

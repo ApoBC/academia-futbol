@@ -34,7 +34,7 @@ class EscaneoController extends Controller
             ], 422);
         }
 
-        $resource = $request->user()->hasRole('admin')
+        $resource = $request->user()->esAdmin()
             ? new EscaneoAdminResource($resultado)
             : new EscaneoProfesorResource($resultado);
 
