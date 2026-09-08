@@ -14,6 +14,9 @@
             @role('profesor|admin')
                 <a href="{{ route('escaneo.index') }}">Escanear</a> |
             @endrole
+            @role('admin')
+                <a href="{{ route('reportes.dashboard') }}">Reportes</a> |
+            @endrole
             <span>{{ auth()->user()->nombre }} ({{ auth()->user()->rol->value }})</span> |
             <form action="{{ route('logout') }}" method="POST" style="display:inline">
                 @csrf

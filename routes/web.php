@@ -7,6 +7,7 @@ use App\Http\Controllers\CarneController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EscaneoController;
 use App\Http\Controllers\PagoController;
+use App\Http\Controllers\ReporteController;
 use App\Http\Controllers\SyncController;
 use Illuminate\Support\Facades\Route;
 
@@ -43,5 +44,16 @@ Route::middleware('auth')->group(function () {
         // Sincronización offline (Fase 5): cache para escanear sin conexión
         Route::get('sync/descargar', [SyncController::class, 'descargar'])->name('sync.descargar');
         Route::post('sync/subir', [SyncController::class, 'subir'])->name('sync.subir');
+    });
+
+    // Reportes: solo admin
+    Route::middleware('role:admin')->prefix('reportes')->name('reportes.')->group(function () {
+        Route::get('/', [ReporteController::class, 'dashboard'])->name('dashboard');
+        Route::get('/deudores', [ReporteController::class, 'deudores'])->name('deudores');
+        Route::get('/deudores/exportar', [ReporteController::class, 'deudoresExport'])->name('deudores.export');
+        Route::get('/asistencias', [ReporteController::class, 'asistencias'])->name('asistencias');
+        Route::get('/asistencias/exportar', [ReporteController::class, 'asistenciasExport'])->name('asistencias.export');
+        Route::get('/ingresos', [ReporteController::class, 'ingresos'])->name('ingresos');
+        Route::get('/ingresos/exportar', [ReporteController::class, 'ingresosExport'])->name('ingresos.export');
     });
 });
