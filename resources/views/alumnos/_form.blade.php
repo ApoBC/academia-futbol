@@ -22,6 +22,17 @@
     <input type="date" name="fecha_nacimiento" value="{{ old('fecha_nacimiento', $alumno?->fecha_nacimiento?->format('Y-m-d')) }}" required>
 </label><br>
 
+<label>Categoría
+    <select name="categoria">
+        <option value="" @selected(old('categoria') === null)>Auto (calcular por edad)</option>
+        @foreach (App\Enums\CategoriaAlumno::cases() as $categoria)
+            <option value="{{ $categoria->value }}" @selected(old('categoria', $alumno?->categoria?->value) === $categoria->value)>
+                {{ $categoria->label() }}
+            </option>
+        @endforeach
+    </select>
+</label><br>
+
 <label>Sexo
     <select name="sexo">
         <option value="">-- No especificado --</option>

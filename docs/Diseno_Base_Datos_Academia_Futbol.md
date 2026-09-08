@@ -129,7 +129,7 @@ Laravel espera un modelo `User` único para autenticación. Separar en 3 tablas 
 | `nombre_completo` | VARCHAR(150) | NO | — | Nombre y apellidos del menor |
 | `dni` | VARCHAR(20) | SÍ | NULL | Documento del menor. Único pero NO es PK. Puede ser NULL si aún no tiene |
 | `fecha_nacimiento` | DATE | NO | — | Obligatorio para calcular categoría automáticamente |
-| `categoria` | ENUM('pre_benjamin','benjamin','alevin','infantil','cadete','juvenil') | NO | — | ⚙️ Calculada automáticamente por el sistema según `fecha_nacimiento` |
+| `categoria` | ENUM('sub_8','sub_10','sub_12','sub_14','sub_17','mayores') | NO | — | ⚙️ Sugerida automáticamente por edad (`fecha_nacimiento`), pero el admin puede fijarla manualmente |
 | `sexo` | ENUM('M','F') | SÍ | NULL | Para separar equipos si aplica |
 | `alergias_enfermedades` | TEXT | SÍ | NULL | ⚠️ Visible para el profesor al escanear QR. Campo libre: "Asma, alergia al polen" |
 | `estado_salud_alerta` | TINYINT(1) | NO | 0 | Flag rápido: 1 = tiene alerta médica. El profesor ve un ícono rojo sin leer todo el texto |
@@ -154,7 +154,7 @@ Laravel espera un modelo `User` único para autenticación. Separar en 3 tablas 
 - `uuid`: Es lo que va dentro del QR. Encriptado con `Crypt::encryptString()`.
 - `fecha_expiracion`: Se actualiza con la lógica inteligente (al día suma desde expiración, moroso suma desde hoy).
 - `estado_salud_alerta`: Booleano rápido para que la vista del profesor muestre un ícono sin parsear el texto de alergias.
-- `categoria`: Calculada con un Accessor en Laravel: si nació hace 7 años → `pre_benjamin`, 8-9 → `benjamin`, etc.
+- `categoria`: Sugerida por `CategoriaService` según la edad (si nació hace 7 años o menos → `sub_8`, 8-9 → `sub_10`, etc.), pero es solo un valor por defecto: el admin la puede sobrescribir manualmente al crear o editar al alumno.
 
 ---
 
@@ -555,7 +555,7 @@ CREATE TABLE alumnos (
     nombre_completo     VARCHAR(150) NOT NULL,
     dni                 VARCHAR(20) NULL DEFAULT NULL,
     fecha_nacimiento    DATE NOT NULL,
-    categoria           ENUM('pre_benjamin','benjamin','alevin','infantil','cadete','juvenil') NOT NULL,
+    categoria           ENUM('sub_8','sub_10','sub_12','sub_14','sub_17','mayores') NOT NULL,
     sexo                ENUM('M','F') NULL DEFAULT NULL,
     alergias_enfermedades TEXT NULL DEFAULT NULL,
     estado_salud_alerta TINYINT(1) NOT NULL DEFAULT 0,
@@ -913,20 +913,22 @@ Cuando pases de Workbench a Laravel, cada tabla se convierte en una migración. 
 
 ---
 
-## 📌 Rangos de Categoría por Edad (Para el cálculo automático)
+## 📌 Rangos de Categoría por Edad (sugerencia automática)
 
-Referencia para implementar en `CategoriaService.php` o como Accessor en el modelo `Alumno`:
+Implementado en `app/Services/CategoriaService.php`. Es solo el valor por defecto:
+el admin puede fijar manualmente la categoría de un alumno al crearlo o editarlo,
+por ejemplo si juega en una categoría distinta a la que le tocaría por edad.
 
-| Categoría | Edad Mínima | Edad Máxima | Temporada base |
-|-----------|-------------|-------------|----------------|
-| Pre-Benjamín | 5 | 7 | Año actual |
-| Benjamín | 8 | 9 | Año actual |
-| Alevín | 10 | 11 | Año actual |
-| Infantil | 12 | 13 | Año actual |
-| Cadete | 14 | 15 | Año actual |
-| Juvenil | 16 | 18 | Año actual |
+| Categoría | Edad Mínima | Edad Máxima |
+|-----------|-------------|-------------|
+| Sub-8 | 5 | 7 |
+| Sub-10 | 8 | 9 |
+| Sub-12 | 10 | 11 |
+| Sub-14 | 12 | 13 |
+| Sub-17 | 14 | 16 |
+| Mayores | 17 | — |
 
-> Estos rangos pueden variar según la federación local. Crear tabla de configuración si se necesita flexibilidad.
+> Estos rangos pueden variar según la academia. Crear tabla de configuración si se necesita flexibilidad.
 
 ---
 

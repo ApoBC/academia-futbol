@@ -17,6 +17,7 @@ use Illuminate\Support\Str;
     'nombre_completo',
     'dni',
     'fecha_nacimiento',
+    'categoria',
     'sexo',
     'alergias_enfermedades',
     'estado_salud_alerta',
@@ -29,18 +30,12 @@ class Alumno extends Model
     {
         static::creating(function (Alumno $alumno): void {
             $alumno->uuid ??= (string) Str::uuid();
+            // La categoría es solo una sugerencia por edad; el admin puede
+            // fijarla manualmente (ver StoreAlumnoRequest/UpdateAlumnoRequest).
             $alumno->categoria ??= app(CategoriaService::class)
                 ->calcular($alumno->fecha_nacimiento)
                 ->value;
             $alumno->estado ??= EstadoAlumno::SinPago->value;
-        });
-
-        static::updating(function (Alumno $alumno): void {
-            if ($alumno->isDirty('fecha_nacimiento')) {
-                $alumno->categoria = app(CategoriaService::class)
-                    ->calcular($alumno->fecha_nacimiento)
-                    ->value;
-            }
         });
     }
 

@@ -8,8 +8,9 @@ use Carbon\Carbon;
 class CategoriaService
 {
     /**
-     * Calcula la categoría de un alumno según su edad actual.
-     * Rangos definidos en docs/Diseno_Base_Datos_Academia_Futbol.md.
+     * Sugiere la categoría de un alumno según su edad actual.
+     * Es solo un valor por defecto: el admin puede sobrescribirla manualmente
+     * al crear o editar al alumno (ver docs/Diseno_Base_Datos_Academia_Futbol.md).
      */
     public function calcular(Carbon|string $fechaNacimiento): CategoriaAlumno
     {
@@ -17,12 +18,12 @@ class CategoriaService
         $edad = $fecha->age;
 
         return match (true) {
-            $edad <= 7 => CategoriaAlumno::PreBenjamin,
-            $edad <= 9 => CategoriaAlumno::Benjamin,
-            $edad <= 11 => CategoriaAlumno::Alevin,
-            $edad <= 13 => CategoriaAlumno::Infantil,
-            $edad <= 15 => CategoriaAlumno::Cadete,
-            default => CategoriaAlumno::Juvenil,
+            $edad <= 7 => CategoriaAlumno::Sub8,
+            $edad <= 9 => CategoriaAlumno::Sub10,
+            $edad <= 11 => CategoriaAlumno::Sub12,
+            $edad <= 13 => CategoriaAlumno::Sub14,
+            $edad <= 16 => CategoriaAlumno::Sub17,
+            default => CategoriaAlumno::Mayores,
         };
     }
 }

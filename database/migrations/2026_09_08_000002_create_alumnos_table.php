@@ -15,7 +15,7 @@ return new class extends Migration
             $table->string('nombre_completo', 150);
             $table->string('dni', 20)->nullable()->unique();
             $table->date('fecha_nacimiento');
-            $table->enum('categoria', ['pre_benjamin', 'benjamin', 'alevin', 'infantil', 'cadete', 'juvenil']);
+            $table->enum('categoria', ['sub_8', 'sub_10', 'sub_12', 'sub_14', 'sub_17', 'mayores']);
             $table->enum('sexo', ['M', 'F'])->nullable();
             $table->text('alergias_enfermedades')->nullable();
             $table->boolean('estado_salud_alerta')->default(false);

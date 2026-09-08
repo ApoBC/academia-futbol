@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\CategoriaAlumno;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -21,6 +22,8 @@ class UpdateAlumnoRequest extends FormRequest
             'nombre_completo' => ['required', 'string', 'max:150'],
             'dni' => ['nullable', 'string', 'max:20', Rule::unique('alumnos', 'dni')->ignore($alumno->id)],
             'fecha_nacimiento' => ['required', 'date', 'before:today'],
+            // Vacío = recalcular automáticamente por edad (ver CategoriaService).
+            'categoria' => ['nullable', Rule::enum(CategoriaAlumno::class)],
             'sexo' => ['nullable', Rule::in(['M', 'F'])],
             'alergias_enfermedades' => ['nullable', 'string'],
             'estado_salud_alerta' => ['boolean'],

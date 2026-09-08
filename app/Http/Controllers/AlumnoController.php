@@ -6,6 +6,7 @@ use App\Http\Requests\StoreAlumnoRequest;
 use App\Http\Requests\UpdateAlumnoRequest;
 use App\Models\Alumno;
 use App\Models\User;
+use App\Services\CategoriaService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
@@ -33,7 +34,7 @@ class AlumnoController extends Controller
 
     public function store(StoreAlumnoRequest $request): RedirectResponse
     {
-        Alumno::create($request->validated());
+        Alumno::create($this->sinCategoriaVacia($request->validated()));
 
         return redirect()->route('alumnos.index')->with('status', 'Alumno registrado correctamente.');
     }
@@ -56,7 +57,13 @@ class AlumnoController extends Controller
 
     public function update(UpdateAlumnoRequest $request, Alumno $alumno): RedirectResponse
     {
-        $alumno->update($request->validated());
+        $datos = $this->sinCategoriaVacia($request->validated());
+
+        if (! array_key_exists('categoria', $datos)) {
+            $datos['categoria'] = app(CategoriaService::class)->calcular($datos['fecha_nacimiento'])->value;
+        }
+
+        $alumno->update($datos);
 
         return redirect()->route('alumnos.index')->with('status', 'Alumno actualizado correctamente.');
     }
@@ -68,5 +75,18 @@ class AlumnoController extends Controller
         $alumno->delete();
 
         return redirect()->route('alumnos.index')->with('status', 'Alumno eliminado (soft delete).');
+    }
+
+    /**
+     * "Auto" en el select de categoría llega como cadena vacía: la quitamos
+     * para que el modelo (creación) o este controller (edición) la calculen.
+     */
+    private function sinCategoriaVacia(array $datos): array
+    {
+        if (($datos['categoria'] ?? null) === '' || ($datos['categoria'] ?? null) === null) {
+            unset($datos['categoria']);
+        }
+
+        return $datos;
     }
 }

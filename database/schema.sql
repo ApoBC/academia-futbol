@@ -48,7 +48,7 @@ CREATE TABLE alumnos (
     nombre_completo     VARCHAR(150) NOT NULL,
     dni                 VARCHAR(20) NULL DEFAULT NULL,
     fecha_nacimiento    DATE NOT NULL,
-    categoria           ENUM('pre_benjamin','benjamin','alevin','infantil','cadete','juvenil') NOT NULL,
+    categoria           ENUM('sub_8','sub_10','sub_12','sub_14','sub_17','mayores') NOT NULL,
     sexo                ENUM('M','F') NULL DEFAULT NULL,
     alergias_enfermedades TEXT NULL DEFAULT NULL,
     estado_salud_alerta TINYINT(1) NOT NULL DEFAULT 0,
