@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
@@ -70,5 +71,10 @@ class Pago extends Model
     public function auditorias(): HasMany
     {
         return $this->hasMany(AuditoriaPago::class);
+    }
+
+    public function carne(): HasOne
+    {
+        return $this->hasOne(CarneQr::class);
     }
 }

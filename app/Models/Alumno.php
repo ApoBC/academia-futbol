@@ -64,4 +64,14 @@ class Alumno extends Model
     {
         return $this->hasMany(Pago::class);
     }
+
+    public function carnes(): HasMany
+    {
+        return $this->hasMany(CarneQr::class);
+    }
+
+    public function carneActivo(): ?CarneQr
+    {
+        return $this->carnes()->where('activo', true)->latest('version')->first();
+    }
 }

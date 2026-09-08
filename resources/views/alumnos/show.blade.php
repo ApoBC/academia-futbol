@@ -17,6 +17,12 @@
             <li><strong>⚠ Alerta de salud:</strong> {{ $alumno->alergias_enfermedades }}</li>
         @endif
     </ul>
+    @if ($alumno->carneActivo())
+        <p><a href="{{ route('alumnos.carne', $alumno) }}">📄 Descargar carné QR (PDF)</a></p>
+    @else
+        <p><em>Aún no tiene carné (se genera automáticamente al confirmar un pago).</em></p>
+    @endif
+
     <h2>Historial de pagos</h2>
     <ul>
         @forelse ($alumno->pagos()->latest('fecha_pago')->get() as $pago)

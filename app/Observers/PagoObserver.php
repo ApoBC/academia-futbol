@@ -6,6 +6,7 @@ use App\Enums\AccionAuditoria;
 use App\Enums\EstadoPago;
 use App\Models\AuditoriaPago;
 use App\Models\Pago;
+use App\Services\CarneService;
 use Illuminate\Support\Facades\Request;
 
 class PagoObserver
@@ -16,6 +17,19 @@ class PagoObserver
 
         if ($pago->estado === EstadoPago::Confirmado) {
             $this->registrar($pago, AccionAuditoria::Confirmado, null, $pago->getAttributes());
+            $this->generarCarneSiAplica($pago);
+        }
+    }
+
+    /**
+     * El carné se genera solo para planes con fecha de expiración (mensual/
+     * trimestral/anual). Los packs se controlan por sesiones, no por vigencia,
+     * así que no imprimen un carné con "vence hasta" (ver docs/Diseno_Base_Datos).
+     */
+    private function generarCarneSiAplica(Pago $pago): void
+    {
+        if ($pago->fecha_expiracion !== null) {
+            app(CarneService::class)->generarParaPago($pago);
         }
     }
 
