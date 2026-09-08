@@ -90,13 +90,29 @@
                 });
 
                 if (res.ok) {
-                    await db.colaPendiente.clear();
+                    const json = await res.json();
+                    // Solo se borran de la cola los ítems que el servidor confirmó
+                    // (ok:true). Un ítem individual fallido (ej. QR corrupto) se
+                    // queda en la cola para poder reintentarlo o revisarlo.
+                    const idsSincronizados = pendientes
+                        .filter((_, i) => json.resultados?.[i]?.ok)
+                        .map((p) => p.id);
+                    await db.colaPendiente.bulkDelete(idsSincronizados);
                     localStorage.setItem('academia_ultima_sync', new Date().toISOString());
                 }
             } catch (e) {
                 // Se reintenta en el próximo evento 'online' o próxima carga.
             }
             actualizarIndicador();
+        }
+
+        function fechaLocal(fecha) {
+            // Evita el desfase de toISOString() (UTC): arma YYYY-MM-DD con la
+            // fecha del navegador tal como la ve el profesor, no en UTC.
+            const y = fecha.getFullYear();
+            const m = String(fecha.getMonth() + 1).padStart(2, '0');
+            const d = String(fecha.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
         }
 
         function colores(semaforo) {
@@ -145,13 +161,21 @@
                 return;
             }
 
-            const yaEnCola = await db.colaPendiente.where('contenido_qr').equals(contenidoQr).count();
             const ahora = new Date();
+            const fechaHoy = fechaLocal(ahora);
 
-            if (yaEnCola === 0) {
+            // El guard de duplicados considera la fecha: una cola pendiente de
+            // un día anterior (aún sin sincronizar) no debe bloquear el
+            // registro de un escaneo nuevo en un día distinto.
+            const yaEnColaHoy = await db.colaPendiente
+                .where('contenido_qr').equals(contenidoQr)
+                .and((item) => item.fecha === fechaHoy)
+                .count();
+
+            if (yaEnColaHoy === 0) {
                 await db.colaPendiente.add({
                     contenido_qr: contenidoQr,
-                    fecha: ahora.toISOString().slice(0, 10),
+                    fecha: fechaHoy,
                     hora: ahora.toTimeString().slice(0, 8),
                 });
             }

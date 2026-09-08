@@ -23,8 +23,7 @@ class EscaneoService
      *
      * Cualquier fallo (QR ilegible, alumno inexistente, alumno de baja) se
      * registra en intentos_escaneo_fallidos para detectar fraude o QRs viejos.
-     */
-    /**
+     *
      * @param  array{fecha?: string, hora?: string, dispositivo_sync?: string, sincronizado?: bool}  $datosAsistencia
      *                                                                                                                 Permite a la sincronización offline (Fase 5) reportar la fecha/hora real
      *                                                                                                                 del escaneo (capturado sin conexión) en vez de usar el momento actual.
