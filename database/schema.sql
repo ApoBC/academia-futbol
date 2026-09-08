@@ -23,7 +23,7 @@ CREATE TABLE usuarios (
     password        VARCHAR(255) NOT NULL,
     telefono        VARCHAR(20) NULL DEFAULT NULL,
     documento_identidad VARCHAR(20) NULL DEFAULT NULL,
-    rol             ENUM('admin','profesor','padre') NOT NULL DEFAULT 'padre',
+    rol             ENUM('superadmin','admin','profesor','padre') NOT NULL DEFAULT 'padre',
     activo          TINYINT(1) NOT NULL DEFAULT 1,
     remember_token  VARCHAR(100) NULL DEFAULT NULL,
     created_at      TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,

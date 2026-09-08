@@ -99,7 +99,7 @@
 | `password` | VARCHAR(255) | NO | — | Hash bcrypt. Nunca texto plano |
 | `telefono` | VARCHAR(20) | SÍ | NULL | Contacto. Opcional para admin/prof |
 | `documento_identidad` | VARCHAR(20) | SÍ | NULL | DNI/CE del padre. No es PK. Puede ser NULL para profesores |
-| `rol` | ENUM('admin','profesor','padre') | NO | 'padre' | Rol principal. Spatie maneja permisos granulares, pero este campo es para queries rápidas |
+| `rol` | ENUM('superadmin','admin','profesor','padre') | NO | 'padre' | Rol principal. Spatie maneja permisos granulares, pero este campo es para queries rápidas |
 | `activo` | TINYINT(1) | NO | 1 | Desactivar usuario sin borrar datos |
 | `remember_token` | VARCHAR(100) | SÍ | NULL | Laravel "recuérdame" |
 | `created_at` | TIMESTAMP | SÍ | CURRENT_TIMESTAMP | — |
@@ -530,7 +530,7 @@ CREATE TABLE usuarios (
     password        VARCHAR(255) NOT NULL,
     telefono        VARCHAR(20) NULL DEFAULT NULL,
     documento_identidad VARCHAR(20) NULL DEFAULT NULL,
-    rol             ENUM('admin','profesor','padre') NOT NULL DEFAULT 'padre',
+    rol             ENUM('superadmin','admin','profesor','padre') NOT NULL DEFAULT 'padre',
     activo          TINYINT(1) NOT NULL DEFAULT 1,
     remember_token  VARCHAR(100) NULL DEFAULT NULL,
     created_at      TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,

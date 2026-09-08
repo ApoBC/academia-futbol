@@ -9,6 +9,7 @@ use App\Http\Controllers\EscaneoController;
 use App\Http\Controllers\PagoController;
 use App\Http\Controllers\ReporteController;
 use App\Http\Controllers\SyncController;
+use App\Http\Controllers\UsuarioController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn () => redirect()->route('login'));
@@ -36,7 +37,7 @@ Route::middleware('auth')->group(function () {
     Route::get('alumnos/{alumno}/carne', [CarneController::class, 'download'])->name('alumnos.carne');
 
     // Escaneo + Asistencias: solo profesor y admin
-    Route::middleware('role:profesor|admin')->group(function () {
+    Route::middleware('role:profesor|admin|superadmin')->group(function () {
         Route::get('escaneo', [EscaneoController::class, 'pantalla'])->name('escaneo.index');
         Route::post('escaneo', [EscaneoController::class, 'escanear'])->name('escaneo.escanear');
         Route::get('asistencias/hoy', [AsistenciaController::class, 'hoy'])->name('asistencias.hoy');
@@ -47,7 +48,7 @@ Route::middleware('auth')->group(function () {
     });
 
     // Reportes: solo admin
-    Route::middleware('role:admin')->prefix('reportes')->name('reportes.')->group(function () {
+    Route::middleware('role:admin|superadmin')->prefix('reportes')->name('reportes.')->group(function () {
         Route::get('/', [ReporteController::class, 'dashboard'])->name('dashboard');
         Route::get('/deudores', [ReporteController::class, 'deudores'])->name('deudores');
         Route::get('/deudores/exportar', [ReporteController::class, 'deudoresExport'])->name('deudores.export');
@@ -55,5 +56,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/asistencias/exportar', [ReporteController::class, 'asistenciasExport'])->name('asistencias.export');
         Route::get('/ingresos', [ReporteController::class, 'ingresos'])->name('ingresos');
         Route::get('/ingresos/exportar', [ReporteController::class, 'ingresosExport'])->name('ingresos.export');
+    });
+
+    // Gestión de usuarios: admin crea profesores, superadmin gestiona a todos (UserPolicy)
+    Route::middleware('role:admin|superadmin')->group(function () {
+        Route::resource('usuarios', UsuarioController::class)->except(['show']);
     });
 });

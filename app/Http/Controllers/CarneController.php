@@ -23,7 +23,7 @@ class CarneController extends Controller
 
         // No requiere la extensión imagick: bacon-qr-code renderiza SVG con PHP puro.
         $qrSvg = base64_encode(
-            QrCode::format('svg')->size(220)->margin(1)->generate($carne->uuid_encriptado)
+            QrCode::format('svg')->size(160)->margin(0)->generate($carne->uuid_encriptado)
         );
 
         $pdf = Pdf::loadView('pdf.carne', [
@@ -31,6 +31,9 @@ class CarneController extends Controller
             'carne' => $carne,
             'qrSvg' => $qrSvg,
         ]);
+
+        // Tamaño real de un DNI / tarjeta ID-1: 85.6mm x 54mm, en puntos (1mm ≈ 2.8346pt).
+        $pdf->setPaper([0, 0, 242.65, 153.07], 'portrait');
 
         return $pdf->download("carne-{$alumno->uuid}.pdf");
     }

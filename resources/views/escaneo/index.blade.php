@@ -8,14 +8,22 @@
 @endsection
 
 @section('content')
-    <h1>Escanear carné</h1>
-    <p><a href="{{ route('asistencias.hoy') }}">Ver asistencias de hoy</a></p>
+    <div class="mb-4 flex items-center justify-between">
+        <h1 class="text-lg font-semibold text-slate-800">Escanear carné</h1>
+        <a href="{{ route('asistencias.hoy') }}" class="text-sm">Ver asistencias de hoy →</a>
+    </div>
 
-    <div id="estadoSync" style="margin-bottom: 12px; font-size: 14px; color: #555;">Cargando estado offline…</div>
+    <div id="estadoSync" class="mb-4 inline-block rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-500">Cargando estado offline…</div>
 
-    <div id="reader" style="width: 320px;"></div>
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-2 md:max-w-2xl">
+        <div class="rounded-xl border border-slate-200 bg-white p-4">
+            <div id="reader" class="w-full overflow-hidden rounded-lg"></div>
+        </div>
 
-    <div id="resultado" style="margin-top: 16px; font-size: 18px;"></div>
+        <div id="resultado" class="rounded-xl border border-slate-200 bg-white p-5 text-base leading-relaxed text-slate-700">
+            Apunta la cámara al QR del carné.
+        </div>
+    </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dexie/3.2.4/dexie.min.js"></script>

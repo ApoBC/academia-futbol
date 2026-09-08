@@ -9,12 +9,12 @@ class AlumnoPolicy
 {
     public function viewAny(User $user): bool
     {
-        return $user->hasAnyRole(['admin', 'profesor', 'padre']);
+        return $user->hasAnyRole(['superadmin', 'admin', 'profesor', 'padre']);
     }
 
     public function view(User $user, Alumno $alumno): bool
     {
-        if ($user->hasRole('admin') || $user->hasRole('profesor')) {
+        if ($user->esAdmin() || $user->hasRole('profesor')) {
             return true;
         }
 
@@ -23,16 +23,16 @@ class AlumnoPolicy
 
     public function create(User $user): bool
     {
-        return $user->hasRole('admin');
+        return $user->esAdmin();
     }
 
     public function update(User $user, Alumno $alumno): bool
     {
-        return $user->hasRole('admin');
+        return $user->esAdmin();
     }
 
     public function delete(User $user, Alumno $alumno): bool
     {
-        return $user->hasRole('admin');
+        return $user->esAdmin();
     }
 }

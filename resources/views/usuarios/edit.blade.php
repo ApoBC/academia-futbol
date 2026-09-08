@@ -1,15 +1,15 @@
 @extends('layouts.app')
 
-@section('title', 'Editar alumno')
+@section('title', 'Editar usuario')
 
 @section('content')
-    <h1 class="mb-4 text-lg font-semibold text-slate-800">Editar alumno</h1>
+    <h1 class="mb-4 text-lg font-semibold text-slate-800">Editar usuario</h1>
 
     <div class="rounded-xl border border-slate-200 bg-white p-6">
-        <form method="POST" action="{{ route('alumnos.update', $alumno) }}">
+        <form method="POST" action="{{ route('usuarios.update', $usuario) }}">
             @csrf
             @method('PUT')
-            @include('alumnos._form')
+            @include('usuarios._form')
             <button type="submit" class="mt-5">Actualizar</button>
         </form>
     </div>

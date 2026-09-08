@@ -30,7 +30,7 @@
                    class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium {{ request()->routeIs('pagos.*') ? 'bg-brand-500 text-white' : 'hover:bg-brand-700 hover:text-white' }}">
                     💳 Pagos
                 </a>
-                @role('profesor|admin')
+                @role('profesor|admin|superadmin')
                     <a href="{{ route('escaneo.index') }}"
                        class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium {{ request()->routeIs('escaneo.*') ? 'bg-brand-500 text-white' : 'hover:bg-brand-700 hover:text-white' }}">
                         📷 Escanear
@@ -40,10 +40,14 @@
                         📋 Asistencias
                     </a>
                 @endrole
-                @role('admin')
+                @role('admin|superadmin')
                     <a href="{{ route('reportes.dashboard') }}"
                        class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium {{ request()->routeIs('reportes.*') ? 'bg-brand-500 text-white' : 'hover:bg-brand-700 hover:text-white' }}">
                         📊 Reportes
+                    </a>
+                    <a href="{{ route('usuarios.index') }}"
+                       class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium {{ request()->routeIs('usuarios.*') ? 'bg-brand-500 text-white' : 'hover:bg-brand-700 hover:text-white' }}">
+                        👥 Usuarios
                     </a>
                 @endrole
             </nav>
@@ -68,7 +72,7 @@
                 </div>
 
                 <div class="flex items-center gap-4">
-                    @role('admin')
+                    @role('admin|superadmin')
                         <div class="relative">
                             <button type="button" onclick="document.getElementById('menuAgregar').classList.toggle('hidden')"
                                     class="rounded-lg bg-brand-500 px-4 py-1.5 text-sm font-medium text-white hover:bg-brand-600">
@@ -77,6 +81,7 @@
                             <div id="menuAgregar" class="hidden absolute right-0 z-10 mt-2 w-44 rounded-lg border border-slate-200 bg-white py-1 shadow-lg">
                                 <a href="{{ route('alumnos.create') }}" class="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">🧑‍🎓 Nuevo alumno</a>
                                 <a href="{{ route('pagos.create') }}" class="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">💳 Nuevo pago</a>
+                                <a href="{{ route('usuarios.create') }}" class="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">👤 Nuevo usuario</a>
                             </div>
                         </div>
                     @endrole
@@ -87,7 +92,7 @@
                         </span>
                         <div class="text-sm leading-tight">
                             <div class="font-medium text-slate-700">{{ auth()->user()->nombre }}</div>
-                            <div class="text-xs capitalize text-slate-400">{{ auth()->user()->rol->value }}</div>
+                            <div class="text-xs text-slate-400">{{ auth()->user()->rol->label() }}</div>
                         </div>
                     </div>
                 </div>
