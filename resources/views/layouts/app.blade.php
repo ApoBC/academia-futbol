@@ -10,6 +10,9 @@
             <a href="{{ route('dashboard') }}">Dashboard</a> |
             <a href="{{ route('alumnos.index') }}">Alumnos</a> |
             <a href="{{ route('pagos.index') }}">Pagos</a> |
+            @role('profesor|admin')
+                <a href="{{ route('escaneo.index') }}">Escanear</a> |
+            @endrole
             <span>{{ auth()->user()->nombre }} ({{ auth()->user()->rol->value }})</span> |
             <form action="{{ route('logout') }}" method="POST" style="display:inline">
                 @csrf

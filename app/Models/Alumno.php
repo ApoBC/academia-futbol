@@ -70,6 +70,11 @@ class Alumno extends Model
         return $this->hasMany(CarneQr::class);
     }
 
+    public function asistencias(): HasMany
+    {
+        return $this->hasMany(Asistencia::class);
+    }
+
     public function carneActivo(): ?CarneQr
     {
         return $this->carnes()->where('activo', true)->latest('version')->first();
