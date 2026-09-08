@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Academia Fútbol - @yield('title', 'Panel')</title>
+    @yield('head')
 </head>
 <body>
     <nav>

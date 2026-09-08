@@ -7,6 +7,7 @@ use App\Http\Controllers\CarneController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EscaneoController;
 use App\Http\Controllers\PagoController;
+use App\Http\Controllers\SyncController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn () => redirect()->route('login'));
@@ -38,5 +39,9 @@ Route::middleware('auth')->group(function () {
         Route::get('escaneo', [EscaneoController::class, 'pantalla'])->name('escaneo.index');
         Route::post('escaneo', [EscaneoController::class, 'escanear'])->name('escaneo.escanear');
         Route::get('asistencias/hoy', [AsistenciaController::class, 'hoy'])->name('asistencias.hoy');
+
+        // Sincronización offline (Fase 5): cache para escanear sin conexión
+        Route::get('sync/descargar', [SyncController::class, 'descargar'])->name('sync.descargar');
+        Route::post('sync/subir', [SyncController::class, 'subir'])->name('sync.subir');
     });
 });
